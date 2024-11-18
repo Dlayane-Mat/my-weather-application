@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "./Weather.css";
 import axios from "axios";
 
 export default function Weather() {
@@ -44,11 +45,13 @@ export default function Weather() {
     return (
       <div>
         {form}
-        <h2 className="City">{city}</h2>
+        <h1 className="City">{city}</h1>
+        <ul>
+          <li>Thursday 22:00</li>
+          <li>{weather.description}</li>
+        </ul>
         <p>
           Temperature: {Math.round(weather.temperature)}°C
-          <br />
-          Description: {weather.description}
           <br />
           Humidity: {weather.humidity}%<br />
           Wind: {weather.wind}km/h
