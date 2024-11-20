@@ -1,67 +1,79 @@
 import React, { useState } from "react";
-import "./Weather.css";
+import FormattedDate from "./FormattedDate";
 import axios from "axios";
+import "./Weather.css";
 
-export default function Weather() {
-  let [city, setCity] = useState("");
-  let [message, setMessage] = useState(false);
-  let [weather, setWeather] = useState({});
-
-  function currentCity(event) {
-    setCity(event.target.value);
-  }
-
-  function showWeather(response) {
-    setMessage(true);
-    setWeather({
+export default function Weather(props) {
+  const [forecast, setForecast] = useState({ ready: false });
+  function handleResponse(response) {
+    setForecast({
+      ready: true,
       temperature: response.data.main.temp,
       wind: response.data.wind.speed,
       humidity: response.data.main.humidity,
-      icon: `http://openweathermap.org/img/wn/${response.data.weather[0].icon}@2x.png`,
       description: response.data.weather[0].description,
+      date: new Date(response.data.dt * 1000),
+      iconUrl:
+        "http://shecodes-assets.s3.amazonaws.com/api/weather/icons/few-clouds-night.png",
+      city: response.data.name,
     });
   }
-  function handleSubmit(event) {
-    event.preventDefault();
-    let apiKey = "8402ccd9e55983fce71eeeaa1d2bd1fc";
-    let apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
-    axios.get(apiUrl).then(showWeather);
-  }
-
-  let form = (
-    <form onSubmit={handleSubmit}>
-      <input
-        type="search"
-        placeholder="Enter a city"
-        autofocus
-        required
-        onChange={currentCity}
-      />
-      <input type="submit" value="Search" />
-    </form>
-  );
-
-  if (message) {
+  if (forecast.ready) {
     return (
-      <div>
-        {form}
-        <h1 className="City">{city}</h1>
+      <div className="Weather">
+        <form>
+          <div className="row">
+            <div className="col-9">
+              <input
+                type="search"
+                placeholder="Enter a city"
+                className="form-control"
+                autoFocus="on"
+              />
+            </div>
+            <div className="col-3">
+              <input
+                type="submit"
+                value="Search"
+                className="btn btn-primary w-100"
+              />
+            </div>
+          </div>
+        </form>
+        <h1>{forecast.city}</h1>
         <ul>
-          <li>Thursday 22:00</li>
-          <li>{weather.description}</li>
+          <li>
+            <FormattedDate date={forecast.date} />
+          </li>
+          <li className="text-capitalize">{forecast.description}</li>
         </ul>
-        <p>
-          Temperature: {Math.round(weather.temperature)}°C
-          <br />
-          Humidity: {weather.humidity}%<br />
-          Wind: {weather.wind}km/h
-          <br />
-          <img src={weather.icon} alt={weather.description} />
-          <br />
-        </p>
+        <div className="row mt-3">
+          <div className="col-6">
+            <div className="clearfix">
+              <img
+                src={forecast.iconUrl}
+                alt={forecast.description}
+                className="floate-left"
+              />
+              <span className="temperature">
+                {Math.round(forecast.temperature)}
+              </span>
+              <span className="unit">"°C</span>
+            </div>
+            <div className="col-6">
+              <ul>
+                <li>Humidity : {forecast.humidity}%</li>
+                <li>Wind :{forecast.wind}km/h</li>
+              </ul>
+            </div>
+          </div>
+        </div>
       </div>
     );
   } else {
-    return form;
+    const apiKey = "0bd4693b39a661e4b0370fe772t7a9o3";
+    const apiUrl = `https://api.shecodes.io/weather/v1/current?query=${props.defaultCity}&key=${apiKey}&units=metric`;
+    axios.get(apiUrl).then(handleResponse);
+    return "Loading..";
   }
 }
