@@ -75,11 +75,11 @@ export default function Weather(props) {
               </span>
               <span className="unit">°C</span>
             </div>
-            <div className="col-6">
-              <ul>
-                <li>Humidity:{forecast.humidity}%</li>
-                <li>Wind:{forecast.wind}km/h</li>
-              </ul>
+
+            <div className="description">
+              <span>Humidity:{forecast.humidity}%</span>
+              <br />
+              <span>Wind:{forecast.wind}km/h</span>
             </div>
           </div>
         </div>
