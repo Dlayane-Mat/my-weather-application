@@ -72,7 +72,7 @@ export default function Weather(props) {
                 className="float-left"
               />
               <span className="WeatherFahrenheit">
-                <WeatherFahrenheit celcius={forecast.temperature.current} />
+                <WeatherFahrenheit celcius={forecast.temperature} />
               </span>
             </div>
 
